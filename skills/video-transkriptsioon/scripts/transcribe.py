@@ -80,12 +80,13 @@ def pick_model(requested: str | None) -> str:
     return "small"
 
 
-def load_model(name: str, device: str):
+def load_model(name: str, device: str, local_only: bool = False):
     from faster_whisper import WhisperModel
 
     compute = "float16" if device == "cuda" else "int8"
     threads = max(1, (os.cpu_count() or 4))
-    return WhisperModel(name, device=device, compute_type=compute, cpu_threads=threads)
+    return WhisperModel(name, device=device, compute_type=compute, cpu_threads=threads,
+                        local_files_only=local_only)
 
 
 def fmt_ts(t: float) -> str:
@@ -118,7 +119,14 @@ def main() -> int:
         return 0
 
     t0 = time.time()
-    model = load_model(model_name, args.device)
+    try:
+        # Kontroll ei tohi mudelit alla laadida: see võtaks liiga kaua ja kontroll katkeks.
+        model = load_model(model_name, args.device, local_only=args.selftest)
+    except Exception as e:
+        if not args.selftest:
+            raise
+        print(f"VIGA: mudel {model_name} pole alla laaditud ({type(e).__name__})", file=sys.stderr)
+        return 1
     print(f"Mudel laetud {time.time() - t0:.1f} s")
 
     if args.selftest:
