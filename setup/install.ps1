@@ -3,7 +3,7 @@
 # Admin-õigusi pole vaja. Kõik läheb kasutaja kodukausta:
 #   %USERPROFILE%\.local\bin     uv ja yt-dlp
 #   %USERPROFILE%\.pixi\bin      ffmpeg, ffprobe, node, npm, npx, deno, git
-#   %USERPROFILE%\.claude\skills kursuse skillid ja HyperFramesi skillid
+#   %USERPROFILE%\.claude\skills HyperFramesi skillid
 #
 # Git for Windowsit pole vaja: git paigaldatakse koos teiste tööriistadega.
 #
@@ -81,13 +81,12 @@ function Phase-Tools {
 }
 
 function Phase-Skills {
-    Say "Kursuse skillid -> $SkillsDir"
     New-Item -ItemType Directory -Force -Path $SkillsDir | Out-Null
-    Get-ChildItem -Directory (Join-Path $RepoDir "skills") | ForEach-Object {
-        $dest = Join-Path $SkillsDir $_.Name
-        if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
-        Copy-Item -Recurse $_.FullName $dest
-        Ok $_.Name
+    # Varasem versioon paigaldas kursuse skillid. Koolitusel teeb osaleja need sammud ise,
+    # seega eemaldame vanad koopiad, et Claude neid automaatselt ei kasutaks.
+    foreach ($name in @("video-transkriptsioon", "video-loikamine")) {
+        $old = Join-Path $SkillsDir $name
+        if (Test-Path $old) { Remove-Item -Recurse -Force $old; Ok "eemaldasin vana skilli $name" }
     }
 
     if (-not (Has "npx")) { Fail "npx puudub. Käivita enne: install.ps1 tools"; exit 1 }
@@ -109,7 +108,7 @@ function Phase-Skills {
 function Phase-Model {
     if (-not (Has "uv")) { Fail "uv puudub. Käivita enne: install.ps1 tools"; exit 1 }
     Say "Whisperi mudel (valitakse arvuti mälu järgi; võib võtta mitu minutit)"
-    $script = Join-Path $SkillsDir "video-transkriptsioon\scripts\transcribe.py"
+    $script = Join-Path $RepoDir "setup\whisper.py"
     if (-not (Run "uv" @("run", "--python", $V.PYTHON_VERSION, $script, "--download-only"))) {
         Fail "Mudeli allalaadimine ebaõnnestus. Käivita sama käsk uuesti, allalaadimine jätkub."; exit 1
     }

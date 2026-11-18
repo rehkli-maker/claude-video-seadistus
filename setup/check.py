@@ -173,10 +173,7 @@ def check_ytdlp(online: bool) -> None:
 
 def check_whisper() -> None:
     fix = f"{FIX_SCRIPT} model"
-    script = SKILLS / "video-transkriptsioon" / "scripts" / "transcribe.py"
-    if not script.exists():
-        add("fail", "Whisper", "transkribeerimise skill puudub", f"{FIX_SCRIPT} skills")
-        return
+    script = REPO / "setup" / "whisper.py"
     try:
         r = run(["uv", "run", "--python", V.get("PYTHON_VERSION", "3.12"), str(script), "--selftest"], timeout=360)
     except subprocess.TimeoutExpired:
@@ -225,11 +222,11 @@ def check_hyperframes() -> None:
 
 
 def check_skills() -> None:
-    mine = [d for d in ("video-transkriptsioon", "video-loikamine") if (SKILLS / d / "SKILL.md").exists()]
-    if len(mine) < 2:
-        add("fail", "Kursuse skillid", f"leitud {len(mine)}/2", f"{FIX_SCRIPT} skills")
-    else:
-        add("ok", "Kursuse skillid", ", ".join(mine))
+    # Kursuse skillid ei tohi olla paigaldatud: koolitusel teeb osaleja need sammud ise.
+    old = [d for d in ("video-transkriptsioon", "video-loikamine") if (SKILLS / d).exists()]
+    if old:
+        add("fail", "Vanad kursuse skillid", "alles: " + ", ".join(old) + " (need teeksid koolituse harjutused osaleja eest ära)",
+            f"{FIX_SCRIPT} skills")
     hf = sorted(p.name for p in SKILLS.glob("hyperframes*") if (p / "SKILL.md").exists()) if SKILLS.exists() else []
     if hf:
         add("ok", "HyperFramesi skillid", ", ".join(hf))

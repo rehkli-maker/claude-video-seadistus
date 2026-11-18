@@ -39,7 +39,8 @@ Laadi alla https://github.com/rehkli-maker/claude-video-seadistus/archive/refs/h
 | **Git** | HyperFramesi skillide paigaldus (Windowsis pole Git for Windowsit vaja) |
 | **Node.js 22** | HyperFramesi jaoks |
 | **HyperFrames** ja Chrome | graafika ja animatsioonid, renderdamine videoks |
-| **Kursuse skillid** | `video-transkriptsioon` ja `video-loikamine` |
+
+Video transkribeerimise ja lõikamise sammud teed koolitusel ise koos Claude'iga. Selleks valmis skille ei paigaldata.
 
 Whisperi mudel valitakse sinu arvuti mälu järgi:
 
@@ -81,12 +82,13 @@ Kui tahad kõik hiljem ära kustutada:
 
 - kaust `~/.pixi` (ffmpeg, Node, Deno, Git)
 - käsk `uv tool uninstall yt-dlp`, seejärel kaust `~/.local/bin/uv` ja uv vahemälu
-- kaustad `~/.claude/skills/video-transkriptsioon` ja `~/.claude/skills/video-loikamine` ning HyperFramesi skillid samas kaustas
+- HyperFramesi skillid kaustas `~/.claude/skills`
 - Whisperi mudel kaustas `~/.cache/huggingface/hub`
 - kaust `~/.claude-video`
 
 ## Koolitajale
 
 - Versioonid on failis `setup/versions.env`.
-- `faster-whisper`, `ctranslate2` ja `av` on lukustatud failis `skills/video-transkriptsioon/scripts/transcribe.py`. Uusim `av` (19.x) ei tööta `faster-whisper` 1.2.1-ga. Enne lukustuse muutmist testi.
+- `faster-whisper`, `ctranslate2` ja `av` on lukustatud failis `setup/whisper.py`. Uusim `av` (19.x) ei tööta `faster-whisper` 1.2.1-ga. Enne lukustuse muutmist testi.
+- Repo ei paigalda kursuse skille: transkriptsiooni ja lõikamise teeb osaleja koolitusel ise promptidega. Kui kellelgi on varasemast paigaldusest alles `video-transkriptsioon` või `video-loikamine`, eemaldab faas `skills` need ja `check` annab nende kohta vea.
 - Näidisvideo ja varufailid käivad kausta `naidis/`. Vaata `naidis/README.md`.
