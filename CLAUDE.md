@@ -1,6 +1,6 @@
 # Claude AI videomonteerija: töökoha seadistus
 
-See repo seadistab osaleja arvuti koolituseks "Claude AI videomonteerija". Pärast seadistust on arvutis olemas ffmpeg, Whisper (faster-whisper), yt-dlp, Node.js 22, Deno, Git, HyperFrames ja kursuse skillid.
+See repo seadistab osaleja arvuti koolituseks "Claude AI videomonteerija". Pärast seadistust on arvutis olemas ffmpeg, Whisper (faster-whisper), yt-dlp, Node.js 22, Deno, Git ja HyperFrames.
 
 Osaleja on tavaliselt repo alla laadinud zip-failina, sest tal ei pruugi olla gitti. Kaust võib seetõttu kanda nime `claude-video-seadistus-main`. See on täiesti korras.
 
@@ -34,7 +34,7 @@ Oota kasutaja vastust.
 Käivita iga faas eraldi käsuna, ajapiiranguga 600000 ms. Pärast iga faasi ütle kasutajale ühe lausega, mis valmis sai.
 
 1. `tools`: uv, pixi, ffmpeg, Node.js 22, Deno, Git, yt-dlp (umbes 2-5 min)
-2. `skills`: kursuse skillid ja HyperFramesi skillid kausta `~/.claude/skills`, Chrome renderdamiseks (umbes 1-3 min)
+2. `skills`: HyperFramesi skillid kausta `~/.claude/skills` ja Chrome renderdamiseks (umbes 1-3 min)
 3. `model`: Whisperi mudel, mis valitakse mälu järgi (small 0,5 GB, medium 1,5 GB, large-v3 3 GB). Kui see ületab ajapiirangu, käivita sama käsk uuesti: allalaadimine jätkub sealt, kus pooleli jäi.
 4. `check`: kontroll, kus iga tööriist teeb väikese päris testi
 
@@ -57,11 +57,11 @@ uv run --python 3.12 --no-project setup/check.py --online --skip-slow
 3. Saada koolitajale kuvatõmmis kontrolli tulemusest. Fail on ka kaustas `~/.claude-video/kontroll.txt`.
 4. Videod tee eraldi projektikausta, mitte selle repo sisse, näiteks `~/Videod/minu-esimene-video/` ning selle alla kaustad `raw/` ja `work/`.
 
-## Kursuse skillid
+## Skillid
 
-- `video-transkriptsioon`: video tekstiks sõnaaegadega (`work/words.json`, `work/transcript.txt`, `work/kahtlased-sonad.txt`)
-- `video-loikamine`: pauside analüüs, kordusvõtete leidmine, cut list, `work/cut.mp4` ja sünkroonikontroll
-- HyperFramesi skillid (`/hyperframes` jt): graafika ja animatsioonid HTML-ina, renderdamine videoks
+- HyperFramesi skillid (`/hyperframes` jt): graafika ja animatsioonid HTML-ina, renderdamine videoks.
+- Kursuse jaoks valmis transkriptsiooni- ega lõikamisskille ei ole. Need sammud teeb osaleja koolitusel ise, Claude'iga suheldes. Kui `~/.claude/skills` kaustas on alles `video-transkriptsioon` või `video-loikamine`, käivita faas `skills`: see eemaldab need.
+- `setup/whisper.py` on ainult mudeli allalaadimiseks ja kontrolliks. Ära kasuta seda videote transkribeerimiseks.
 
 ## Tuntud probleemid
 
@@ -86,7 +86,7 @@ uv run --python 3.12 --no-project setup/check.py --online --skip-slow
 |---|---|
 | `~/.local/bin` | `uv`, `yt-dlp` |
 | `~/.pixi/bin` | `ffmpeg`, `ffprobe`, `ffplay`, `node`, `npm`, `npx`, `deno`, `git` |
-| `~/.claude/skills` | kursuse skillid ja HyperFramesi skillid |
+| `~/.claude/skills` | HyperFramesi skillid |
 | `~/.cache/huggingface` (Windowsis `%USERPROFILE%\.cache\huggingface`) | Whisperi mudel |
 | `~/.claude-video/kontroll.txt` | viimase kontrolli tulemus |
 

@@ -4,11 +4,11 @@
 # Admin-õigusi ega Homebrew'd pole vaja. Kõik läheb kasutaja kodukausta:
 #   ~/.local/bin   uv ja yt-dlp
 #   ~/.pixi/bin    ffmpeg, ffprobe, node, npm, npx, deno, git
-#   ~/.claude/skills   kursuse skillid ja HyperFramesi skillid
+#   ~/.claude/skills   HyperFramesi skillid
 #
 # Kasutamine:
 #   bash setup/install.sh tools    # uv, pixi, ffmpeg, Node 22, Deno, Git, yt-dlp
-#   bash setup/install.sh skills   # kursuse skillid + HyperFramesi skillid
+#   bash setup/install.sh skills   # HyperFramesi skillid + renderdamise Chrome
 #   bash setup/install.sh model    # Whisperi mudeli allalaadimine (võib võtta 5-15 min)
 #   bash setup/install.sh check    # kontroll ja kokkuvõte
 #   bash setup/install.sh all      # kõik järjest
@@ -67,13 +67,14 @@ phase_tools() {
 }
 
 phase_skills() {
-  say "Kursuse skillid -> $SKILLS_DIR"
   mkdir -p "$SKILLS_DIR"
-  for d in "$REPO_DIR"/skills/*/; do
-    name="$(basename "$d")"
-    rm -rf "${SKILLS_DIR:?}/$name"
-    cp -R "$d" "$SKILLS_DIR/$name"
-    ok "$name"
+  # Varasem versioon paigaldas kursuse skillid. Koolitusel teeb osaleja need sammud ise,
+  # seega eemaldame vanad koopiad, et Claude neid automaatselt ei kasutaks.
+  for name in video-transkriptsioon video-loikamine; do
+    if [ -d "$SKILLS_DIR/$name" ]; then
+      rm -rf "${SKILLS_DIR:?}/$name"
+      ok "eemaldasin vana skilli $name"
+    fi
   done
 
   say "HyperFramesi skillid (HeyGeni ametlikud)"
@@ -97,7 +98,7 @@ phase_skills() {
 phase_model() {
   need_cmd uv "Käivita enne: bash setup/install.sh tools"
   say "Whisperi mudel (valitakse arvuti mälu järgi; võib võtta mitu minutit)"
-  uv run --python "$PYTHON_VERSION" "$SKILLS_DIR/video-transkriptsioon/scripts/transcribe.py" --download-only \
+  uv run --python "$PYTHON_VERSION" "$REPO_DIR/setup/whisper.py" --download-only \
     || { fail "mudeli allalaadimine ebaõnnestus. Käivita sama käsk uuesti, allalaadimine jätkub."; exit 1; }
 }
 
