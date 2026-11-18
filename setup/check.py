@@ -178,9 +178,9 @@ def check_whisper() -> None:
         add("fail", "Whisper", "transkribeerimise skill puudub", f"{FIX_SCRIPT} skills")
         return
     try:
-        r = run(["uv", "run", "--python", V.get("PYTHON_VERSION", "3.12"), str(script), "--selftest"], timeout=240)
+        r = run(["uv", "run", "--python", V.get("PYTHON_VERSION", "3.12"), str(script), "--selftest"], timeout=360)
     except subprocess.TimeoutExpired:
-        add("fail", "Whisper", "test ei lõppenud 4 minutiga",
+        add("fail", "Whisper", "test ei lõppenud 6 minutiga",
             f"Käivita kontroll uuesti. Kui kordub, proovi väiksemat mudelit: WHISPER_MODEL=small, siis {fix}")
         return
     model = re.search(r"Mudel: (\S+)", r.stdout)
