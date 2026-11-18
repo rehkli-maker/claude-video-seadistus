@@ -75,6 +75,8 @@ uv run --python 3.12 --no-project setup/check.py --online --skip-slow
 | `uv`, `pixi`, `ffmpeg` "command not found" pärast paigaldust | PATH uueneb alles uues aknas. Skriptid lisavad PATH-i ise, aga Claude'i rakendus tuleb lõpuks uuesti käivitada. Seniks kasuta täisteid `~/.local/bin/uv` ja `~/.pixi/bin/ffmpeg`. |
 | Whisper on väga aeglane või mälu saab otsa | Kasuta väiksemat mudelit: `WHISPER_MODEL=small`, seejärel käivita `model` ja `check` uuesti. |
 | Vähe kettaruumi | Vaja on umbes 6 GB. Ütle kasutajale, kui palju puudu on. |
+| `check` katkeb ajapiirangu tõttu või ütleb "test ei lõppenud" | Esimene kord võib olla aeglane. Käivita `check` uuesti, teisel korral on see kiirem. Kui Whisper on endiselt liiga aeglane, kasuta väiksemat mudelit (vaata ülalt). |
+| `check` ütleb "mudel pole alla laaditud" | Käivita `model` faas ja seejärel `check` uuesti. |
 | Asutuse proxy | Küsi kasutajalt proxy aadress ja sea `HTTPS_PROXY` ning `HTTP_PROXY` keskkonnamuutujad. |
 | Windows ARM arvuti (Snapdragon, Surface Pro X) | Pole testitud. Kõik paketid ei pruugi olla saadaval. Ütle seda kasutajale ausalt ja soovita teist arvutit. |
 

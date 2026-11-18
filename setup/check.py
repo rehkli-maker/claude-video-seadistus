@@ -56,7 +56,7 @@ def add(status: str, name: str, detail: str, fix: str = "") -> None:
     print(f"[{icon}] {name}: {detail}", flush=True)
 
 
-def run(cmd: list[str], timeout: int = 600) -> subprocess.CompletedProcess:
+def run(cmd: list[str], timeout: int = 120) -> subprocess.CompletedProcess:
     exe = shutil.which(cmd[0])
     if exe:
         cmd = [exe, *cmd[1:]]
@@ -88,8 +88,14 @@ def check_machine() -> None:
     detail = f"{platform.system()} {platform.machine()}, mälu {ram:.1f} GB, vaba kettaruum {free:.1f} GB"
     model = os.environ.get("WHISPER_MODEL") or ("large-v3" if ram >= 15 else "medium" if ram >= 7 else "small")
     detail += f", Whisperi mudel {model}"
-    if free < 6:
-        add("fail", "Arvuti", detail, "Vabasta vähemalt 6 GB kettaruumi.")
+    # Kontroll käib pärast paigaldust, mil tööriistad juba võtavad oma ruumi.
+    # Siin on vaja ainult ruumi videotöö jaoks.
+    if free < 2:
+        add("fail", "Arvuti", detail + " (videotöö jaoks liiga vähe ruumi)",
+            "Vabasta kettaruumi, et vaba oleks vähemalt 5 GB.")
+    elif free < 5:
+        add("warn", "Arvuti", detail + " (vähe vaba ruumi, videofailid on suured)",
+            "Soovitav on vähemalt 5 GB vaba ruumi.")
     elif ram and ram < 7:
         add("warn", "Arvuti", detail + " (väike mälu, eesti keeles rohkem vigu)")
     else:
@@ -172,13 +178,16 @@ def check_whisper() -> None:
         add("fail", "Whisper", "transkribeerimise skill puudub", f"{FIX_SCRIPT} skills")
         return
     try:
-        r = run(["uv", "run", "--python", V.get("PYTHON_VERSION", "3.12"), str(script), "--selftest"], timeout=900)
+        r = run(["uv", "run", "--python", V.get("PYTHON_VERSION", "3.12"), str(script), "--selftest"], timeout=240)
     except subprocess.TimeoutExpired:
-        add("fail", "Whisper", "test ei lõppenud 15 minutiga", fix)
+        add("fail", "Whisper", "test ei lõppenud 4 minutiga",
+            f"Käivita kontroll uuesti. Kui kordub, proovi väiksemat mudelit: WHISPER_MODEL=small, siis {fix}")
         return
     model = re.search(r"Mudel: (\S+)", r.stdout)
     name = model.group(1) if model else "?"
-    if r.returncode == 0 and "Whisper töötab" in r.stdout:
+    if "pole alla laaditud" in r.stderr:
+        add("fail", "Whisper", f"mudel {name} pole alla laaditud", fix)
+    elif r.returncode == 0 and "Whisper töötab" in r.stdout:
         add("ok", "Whisper", f"faster-whisper, mudel {name} laetud ja töötab")
     else:
         tail = (r.stderr or r.stdout).strip().splitlines()[-1:] or ["teadmata viga"]
@@ -194,9 +203,9 @@ def check_hyperframes() -> None:
     try:
         with tempfile.TemporaryDirectory() as td:
             r = subprocess.run([shutil.which("npx"), "--yes", hf, "doctor", "--json"], cwd=td,
-                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=180)
     except subprocess.TimeoutExpired:
-        add("fail", "HyperFrames", "kontroll ei lõppenud 10 minutiga", fix)
+        add("fail", "HyperFrames", "kontroll ei lõppenud 3 minutiga", f"Käivita kontroll uuesti. Kui kordub: {fix}")
         return
     txt = r.stdout
     try:
