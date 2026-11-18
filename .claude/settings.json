@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash setup/install.sh:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File setup/install.ps1:*)",
+      "Bash(uv run --python 3.12 --no-project setup/check.py:*)",
+      "Read(~/.claude-video/**)"
+    ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(brew install:*)"
+    ]
+  }
+}
