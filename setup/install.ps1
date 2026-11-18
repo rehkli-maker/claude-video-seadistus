@@ -2,15 +2,17 @@
 #
 # Admin-õigusi pole vaja. Kõik läheb kasutaja kodukausta:
 #   %USERPROFILE%\.local\bin     uv ja yt-dlp
-#   %USERPROFILE%\.pixi\bin      ffmpeg, ffprobe, node, npm, npx, deno
+#   %USERPROFILE%\.pixi\bin      ffmpeg, ffprobe, node, npm, npx, deno, git
 #   %USERPROFILE%\.claude\skills kursuse skillid ja HyperFramesi skillid
 #
-# Kasutamine (Claude Code'is või PowerShellis repo kaustas):
-#   powershell -ExecutionPolicy Bypass -File setup\install.ps1 tools
-#   powershell -ExecutionPolicy Bypass -File setup\install.ps1 skills
-#   powershell -ExecutionPolicy Bypass -File setup\install.ps1 model
-#   powershell -ExecutionPolicy Bypass -File setup\install.ps1 check
-#   powershell -ExecutionPolicy Bypass -File setup\install.ps1 all
+# Git for Windowsit pole vaja: git paigaldatakse koos teiste tööriistadega.
+#
+# Kasutamine repo kaustas (töötab nii PowerShellis kui Git Bashis):
+#   powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 tools
+#   powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 skills
+#   powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 model
+#   powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 check
+#   powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 all
 #
 # Skripti võib julgelt uuesti käivitada.
 
@@ -62,11 +64,12 @@ function Phase-Tools {
         Ok "pixi paigaldatud: $(pixi --version)"
     }
 
-    Say "3/4 ffmpeg, Node.js 22 ja Deno"
-    if (-not (Run "pixi" @("global", "install", $V.FFMPEG_SPEC, $V.NODE_SPEC, $V.DENO_SPEC))) {
+    Say "3/4 ffmpeg, Node.js 22, Deno ja Git"
+    if (-not (Run "pixi" @("global", "install", $V.FFMPEG_SPEC, $V.NODE_SPEC, $V.DENO_SPEC, $V.GIT_SPEC))) {
         Fail "pixi global install ebaõnnestus"; exit 1
     }
     Ok "$((ffmpeg -version | Select-Object -First 1))"
+    Ok "$(git --version)"
     Ok "node $(node --version)"
     Ok "$((deno --version | Select-Object -First 1))"
 

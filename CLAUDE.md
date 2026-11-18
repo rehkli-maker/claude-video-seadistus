@@ -1,6 +1,8 @@
 # Claude AI videomonteerija: töökoha seadistus
 
-See repo seadistab osaleja arvuti koolituseks "Claude AI videomonteerija". Pärast seadistust on arvutis olemas ffmpeg, Whisper (faster-whisper), yt-dlp, Node.js 22, Deno, HyperFrames ja kursuse skillid.
+See repo seadistab osaleja arvuti koolituseks "Claude AI videomonteerija". Pärast seadistust on arvutis olemas ffmpeg, Whisper (faster-whisper), yt-dlp, Node.js 22, Deno, Git, HyperFrames ja kursuse skillid.
+
+Osaleja on tavaliselt repo alla laadinud zip-failina, sest tal ei pruugi olla gitti. Kaust võib seetõttu kanda nime `claude-video-seadistus-main`. See on täiesti korras.
 
 **Räägi kasutajaga alati eesti keeles, lühidalt ja lihtsalt.** Kasutaja on algaja, mitte arendaja. Ära selgita tehnilisi detaile, kui ta neid ei küsi.
 
@@ -16,7 +18,8 @@ See repo seadistab osaleja arvuti koolituseks "Claude AI videomonteerija". Pära
 ### 1. Tuvasta operatsioonisüsteem
 
 - macOS või Linux: käsud on `bash setup/install.sh <faas>`.
-- Windows (Claude Code kasutab seal Git Bashi): käsud on `powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 <faas>`.
+- Windows: käsud on `powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 <faas>`. See töötab nii siis, kui Claude Code kasutab PowerShelli, kui ka siis, kui ta kasutab Git Bashi. Kasuta kaldkriipsu `/`, mitte `\`.
+- Git for Windowsit pole vaja. `tools` faas paigaldab gitti ise.
 
 ### 2. Ütle kasutajale, mis juhtub, ja küsi OK
 
@@ -30,7 +33,7 @@ Oota kasutaja vastust.
 
 Käivita iga faas eraldi käsuna, ajapiiranguga 600000 ms. Pärast iga faasi ütle kasutajale ühe lausega, mis valmis sai.
 
-1. `tools`: uv, pixi, ffmpeg, Node.js 22, Deno, yt-dlp (umbes 2-5 min)
+1. `tools`: uv, pixi, ffmpeg, Node.js 22, Deno, Git, yt-dlp (umbes 2-5 min)
 2. `skills`: kursuse skillid ja HyperFramesi skillid kausta `~/.claude/skills`, Chrome renderdamiseks (umbes 1-3 min)
 3. `model`: Whisperi mudel, mis valitakse mälu järgi (small 0,5 GB, medium 1,5 GB, large-v3 3 GB). Kui see ületab ajapiirangu, käivita sama käsk uuesti: allalaadimine jätkub sealt, kus pooleli jäi.
 4. `check`: kontroll, kus iga tööriist teeb väikese päris testi
@@ -67,7 +70,8 @@ uv run --python 3.12 --no-project setup/check.py --online --skip-slow
 | pixi paigaldus ebaõnnestub, viga github.com-iga | Asutuse võrk blokeerib GitHubi allalaadimisi. Proovi kodus või telefoni levialaga. |
 | Windows: "running scripts is disabled on this system" | Käivita täpselt nii, nagu ülal: `powershell.exe -ExecutionPolicy Bypass -File ...` |
 | Windows: viirusetõrje või SmartScreen blokeerib `.pixi\bin` faili | pixi kasutab väikeseid käivitusfaile. Luba need või lisa `%USERPROFILE%\.pixi` erandiks. |
-| Mac: `xcrun: error: invalid active developer path` | Git puudub. Kasutaja peab käivitama `xcode-select --install` ja vajutama Install. Admin-parooli see tavaliselt ei vaja. |
+| Mac: `xcrun: error: invalid active developer path` või hüpikaken, mis pakub arendustööriistade paigaldust | Midagi kutsus Apple'i gitti enne, kui `tools` faas oli läbi. Vajuta aknas "Not Now" ja käivita `tools` faas. See paigaldab oma giti. |
+| Windows: hüpikaken küsib administraatori parooli | Midagi on valesti, sest ükski samm ei vaja admin-õigusi. Vajuta "No" ja kirjelda kasutajale, mis aken see oli. |
 | `uv`, `pixi`, `ffmpeg` "command not found" pärast paigaldust | PATH uueneb alles uues aknas. Skriptid lisavad PATH-i ise, aga Claude'i rakendus tuleb lõpuks uuesti käivitada. Seniks kasuta täisteid `~/.local/bin/uv` ja `~/.pixi/bin/ffmpeg`. |
 | Whisper on väga aeglane või mälu saab otsa | Kasuta väiksemat mudelit: `WHISPER_MODEL=small`, seejärel käivita `model` ja `check` uuesti. |
 | Vähe kettaruumi | Vaja on umbes 6 GB. Ütle kasutajale, kui palju puudu on. |
@@ -79,7 +83,7 @@ uv run --python 3.12 --no-project setup/check.py --online --skip-slow
 | Asukoht | Sisu |
 |---|---|
 | `~/.local/bin` | `uv`, `yt-dlp` |
-| `~/.pixi/bin` | `ffmpeg`, `ffprobe`, `ffplay`, `node`, `npm`, `npx`, `deno` |
+| `~/.pixi/bin` | `ffmpeg`, `ffprobe`, `ffplay`, `node`, `npm`, `npx`, `deno`, `git` |
 | `~/.claude/skills` | kursuse skillid ja HyperFramesi skillid |
 | `~/.cache/huggingface` (Windowsis `%USERPROFILE%\.cache\huggingface`) | Whisperi mudel |
 | `~/.claude-video/kontroll.txt` | viimase kontrolli tulemus |

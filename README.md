@@ -7,25 +7,27 @@ See repo valmistab sinu arvuti ette koolituseks "Claude AI videomonteerija". Sa 
 ## Mida sul enne vaja on
 
 1. **Claude'i tasuline konto** (Pro, Max, Team või Enterprise).
-2. **Claude'i töölauarakendus** Maci või Windowsi jaoks: [claude.com/download](https://claude.com/download). Rakenduses kasutame vahekaarti **Code**.
-3. **Ainult Windowsis: Git for Windows**: [git-scm.com/downloads/win](https://git-scm.com/downloads/win). Claude Code vajab seda Windowsis niikuinii. Paigaldamisel võid kõik vaikevalikud jätta nii, nagu need on.
-4. Umbes **6 GB vaba kettaruumi**.
+2. **Claude'i töölauarakendus.** Laadi see alla aadressilt [claude.com/download](https://claude.com/download), paigalda ja logi sisse.
+3. Umbes **6 GB vaba kettaruumi**.
 
-Admin-parooli pole vaja. Kõik paigaldub sinu kasutaja kodukausta.
+Rohkem pole midagi vaja. Sa ei pea ise midagi muud paigaldama ja admin-parooli ei küsita. Ka Windowsis pole vaja eraldi programme.
 
-## Seadistus: üks lause
+## Seadistus
 
-1. Ava Claude'i rakendus ja vali **Code**.
-2. Vali töökaustaks oma kodukaust.
-3. Kleebi vestlusesse:
+1. **Ava Claude'i rakendus** ja vali üleval **Code**.
+2. **Kui rakendus küsib kausta**, vali oma kodukaust. See on kaust, mis kannab sinu kasutajanime.
+3. **Kopeeri see lause ja kleebi Claude'i vestlusesse:**
 
 ```
-Klooni https://github.com/rehkli-maker/claude-video-seadistus minu kodukausta, ava see kaust ja seadista mu arvuti videokoolituseks, järgides repo CLAUDE.md juhiseid.
+Laadi alla https://github.com/rehkli-maker/claude-video-seadistus/archive/refs/heads/main.zip, paki see lahti minu kodukausta, ava lahtipakitud kaust ja seadista mu arvuti videokoolituseks, järgides selle kausta CLAUDE.md juhiseid.
 ```
 
-4. Claude ütleb, mida ta teeb, ja küsib luba. Vasta **jah**. Iga käsu juures võib ta luba uuesti küsida, siis vajuta **Allow**.
-5. Lõpus näed kontrolli tulemust. Kui seal on **KÕIK VALMIS**, tee sellest kuvatõmmis ja saada koolitajale.
-6. **Sulge Claude'i rakendus täielikult ja ava uuesti.** Alles siis on uued tööriistad kasutusel.
+4. **Anna luba.** Claude ütleb, mida ta teha kavatseb, ja küsib, kas võib alustada. Vasta **jah**. Töö käigus küsib ta luba ka üksikute sammude jaoks. Siis vajuta **Allow**. See on normaalne ja nii peabki olema.
+5. **Oota 10-20 minutit.** Vahepeal võib tunduda, et midagi ei toimu. Tavaliselt laadib Claude siis Whisperi mudelit alla. Ära sulge rakendust.
+6. **Vaata tulemust.** Lõpus näed kontrolli kokkuvõtet. Kui seal on **KÕIK VALMIS**, tee sellest kuvatõmmis ja saada koolitajale. Kui seal on midagi punast, saada samuti kuvatõmmis.
+7. **Sulge Claude'i rakendus täielikult ja ava uuesti.** Alles siis on uued tööriistad kasutusel.
+   - Macis vajuta rakenduses **Cmd + Q**.
+   - Windowsis sulge aken. Kui ekraani paremas alanurgas on veel Claude'i ikoon, tee sellel paremklõps ja vali **Quit**.
 
 ## Mida paigaldatakse
 
@@ -34,6 +36,7 @@ Klooni https://github.com/rehkli-maker/claude-video-seadistus minu kodukausta, a
 | **ffmpeg** | video lõikamine, liitmine ja eksport |
 | **Whisper** (faster-whisper) | kõne tekstiks, igal sõnal oma ajatempel |
 | **yt-dlp** ja **Deno** | eeskujuvideote allalaadimine |
+| **Git** | HyperFramesi skillide paigaldus (Windowsis pole Git for Windowsit vaja) |
 | **Node.js 22** | HyperFramesi jaoks |
 | **HyperFrames** ja Chrome | graafika ja animatsioonid, renderdamine videoks |
 | **Kursuse skillid** | `video-transkriptsioon` ja `video-loikamine` |
@@ -67,7 +70,7 @@ bash setup/install.sh all
 
 Windows (PowerShell):
 ```powershell
-powershell -ExecutionPolicy Bypass -File setup\install.ps1 all
+powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1 all
 ```
 
 Faasid on `tools`, `skills`, `model` ja `check`. Neid saab käivitada ka ükshaaval.
@@ -76,7 +79,7 @@ Faasid on `tools`, `skills`, `model` ja `check`. Neid saab käivitada ka ükshaa
 
 Kui tahad kõik hiljem ära kustutada:
 
-- kaust `~/.pixi` (ffmpeg, Node, Deno)
+- kaust `~/.pixi` (ffmpeg, Node, Deno, Git)
 - käsk `uv tool uninstall yt-dlp`, seejärel kaust `~/.local/bin/uv` ja uv vahemälu
 - kaustad `~/.claude/skills/video-transkriptsioon` ja `~/.claude/skills/video-loikamine` ning HyperFramesi skillid samas kaustas
 - Whisperi mudel kaustas `~/.cache/huggingface/hub`

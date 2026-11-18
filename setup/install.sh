@@ -3,11 +3,11 @@
 #
 # Admin-õigusi ega Homebrew'd pole vaja. Kõik läheb kasutaja kodukausta:
 #   ~/.local/bin   uv ja yt-dlp
-#   ~/.pixi/bin    ffmpeg, ffprobe, node, npm, npx, deno
+#   ~/.pixi/bin    ffmpeg, ffprobe, node, npm, npx, deno, git
 #   ~/.claude/skills   kursuse skillid ja HyperFramesi skillid
 #
 # Kasutamine:
-#   bash setup/install.sh tools    # uv, pixi, ffmpeg, Node 22, Deno, yt-dlp
+#   bash setup/install.sh tools    # uv, pixi, ffmpeg, Node 22, Deno, Git, yt-dlp
 #   bash setup/install.sh skills   # kursuse skillid + HyperFramesi skillid
 #   bash setup/install.sh model    # Whisperi mudeli allalaadimine (võib võtta 5-15 min)
 #   bash setup/install.sh check    # kontroll ja kokkuvõte
@@ -54,9 +54,10 @@ phase_tools() {
     ok "pixi paigaldatud: $(pixi --version)"
   fi
 
-  say "3/4 ffmpeg, Node.js 22 ja Deno"
-  pixi global install "$FFMPEG_SPEC" "$NODE_SPEC" "$DENO_SPEC" || { fail "pixi global install ebaõnnestus"; exit 1; }
+  say "3/4 ffmpeg, Node.js 22, Deno ja Git"
+  pixi global install "$FFMPEG_SPEC" "$NODE_SPEC" "$DENO_SPEC" "$GIT_SPEC" || { fail "pixi global install ebaõnnestus"; exit 1; }
   ok "$(ffmpeg -version | head -1)"
+  ok "$(git --version)"
   ok "node $(node --version)"
   ok "$(deno --version | head -1)"
 

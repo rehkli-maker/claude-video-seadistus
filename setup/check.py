@@ -46,7 +46,7 @@ def versions() -> dict:
 
 
 V = versions()
-FIX_SCRIPT = "powershell -ExecutionPolicy Bypass -File setup\\install.ps1" if WIN else "bash setup/install.sh"
+FIX_SCRIPT = "powershell.exe -ExecutionPolicy Bypass -File setup/install.ps1" if WIN else "bash setup/install.sh"
 results: list[tuple[str, str, str, str]] = []  # (staatus, nimi, detail, lahendus)
 
 
